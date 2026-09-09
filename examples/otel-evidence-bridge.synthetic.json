@@ -1,0 +1,12 @@
+{
+  "cost": {
+    "kind": "ESTIMATED_RATE_CARD",
+    "amount_usd": 0.0012,
+    "basis_id": "team-rate-card-v01"
+  },
+  "evaluation": {
+    "status": "PASS",
+    "name": "team-acceptance-check",
+    "version": "v01"
+  }
+}

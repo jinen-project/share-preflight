@@ -36,6 +36,12 @@ opa eval --format=pretty \
 
 Teams can add a separately named profile and adjust their data labels, approved destinations, and exception path. A profile should name its owner, record why it changed, and carry synthetic `allow`, `hold`, and `deny` examples. The free OSS does not lock this behind a paid tier.
 
+## Optional OpenTelemetry evidence bridge
+
+If an application already uses OpenTelemetry, it can attach a **content-minimised** Share Preflight receipt to an existing span. The optional mapper distinguishes the preflight result, provider-reported/estimated/unknown cost, and named task-specific evaluation rather than treating them as one generic "quality" claim.
+
+See [the one-screen integration example](examples/otel-evidence-bridge.md). It adds no telemetry dependency to this project, does not export data, and does not put input text, matched values, receipt paths, prompts, or completions into the mapped attributes.
+
 ## Online-only delivery path
 
 The OSS is useful on its own. If a team needs help, the compatible paid delivery is not a required meeting: it can be completed by email or an online form using only non-sensitive policy metadata. The deliverable can be a reviewed profile file, synthetic tests, an installation guide, and a content-minimised change receipt. Do not send source text, credentials, customer data, or a raw secret-scanner report for this setup.
