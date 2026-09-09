@@ -1,0 +1,13 @@
+{
+  "checks": { "email": true },
+  "literal_terms": [
+    { "id": "PROJECT_CEDAR", "value": "Project Cedar", "case_sensitive": false }
+  ],
+  "regex_rules": [],
+  "profiles": {
+    "standard-conservative-v01": {
+      "label": "Standard conservative starting profile",
+      "owner": "Name the responsible policy owner before operational use"
+    }
+  }
+}

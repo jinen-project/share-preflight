@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "standard-conservative-v01": {
+      "label": "Standard conservative starting profile",
+      "owner": "Name the responsible policy owner before operational use",
+      "public_classifications": ["public"],
+      "restricted_classifications": ["restricted"],
+      "approved_destinations": ["internal-review-workspace"],
+      "change_control": {
+        "change_rationale_required": true,
+        "reviewer_required": true,
+        "synthetic_decisions_required": ["allow", "hold", "deny"]
+      }
+    }
+  }
+}

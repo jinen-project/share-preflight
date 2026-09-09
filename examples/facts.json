@@ -1,0 +1,6 @@
+{
+  "profile_id": "standard-conservative-v01",
+  "data_classification": "public",
+  "destination": "named-external-ai",
+  "exception_approved": false
+}

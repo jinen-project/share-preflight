@@ -1,0 +1,23 @@
+{
+  "request_type": "SHARE_PREFLIGHT_PROFILE_REQUEST_V01",
+  "profile_id": "replace-with-a-stable-profile-id",
+  "profile_label": "A short human-readable label",
+  "responsible_owner_role": "Role accountable for approving this profile",
+  "classification_labels": {
+    "public": ["public"],
+    "restricted": ["restricted"]
+  },
+  "approved_destinations": ["name-only-approved-destination"],
+  "exception_approver_role": "Role permitted to approve an exception",
+  "expected_cases": [
+    { "expected_decision": "allow", "synthetic_description": "A public example after configured preflight passes." },
+    { "expected_decision": "hold", "synthetic_description": "A required fact is missing." },
+    { "expected_decision": "deny", "synthetic_description": "Restricted material targets an unapproved destination." }
+  ],
+  "change_rationale": "Why this profile or change is needed.",
+  "confirmation": {
+    "contains_no_source_text": true,
+    "contains_no_credentials": true,
+    "contains_no_customer_data": true
+  }
+}
