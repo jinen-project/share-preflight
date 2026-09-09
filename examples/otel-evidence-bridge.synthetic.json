@@ -8,5 +8,11 @@
     "status": "PASS",
     "name": "team-acceptance-check",
     "version": "v01"
+  },
+  "improvement": {
+    "state": "REEVALUATED_PASS",
+    "failure_class": "UNMAPPED_DESTINATION",
+    "regression_fixture_id": "synthetic-unmapped-destination-v01",
+    "change_id": "profile-change-v02"
   }
 }

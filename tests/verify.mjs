@@ -21,9 +21,11 @@ assert.equal(JSON.stringify(result).includes('Project Cedar'), false);
 const otelAttributes = toOtelAttributes({
   receipt: result,
   cost: { kind: 'ESTIMATED_RATE_CARD', amount_usd: 0.0012, basis_id: 'synthetic-rate-card-v01' },
-  evaluation: { status: 'PASS', name: 'synthetic-claim-scope-check', version: 'v01' }
+  evaluation: { status: 'PASS', name: 'synthetic-claim-scope-check', version: 'v01' },
+  improvement: { state: 'REEVALUATED_PASS', failure_class: 'UNMAPPED_DESTINATION', regression_fixture_id: 'synthetic-unmapped-destination-v01', change_id: 'profile-change-v02' }
 });
 assert.equal(otelAttributes['share_preflight.content.capture'], 'DISABLED');
+assert.equal(otelAttributes['share_preflight.improvement.state'], 'REEVALUATED_PASS');
 assert.equal(JSON.stringify(otelAttributes).includes('/synthetic/hold.txt'), false);
 assert.equal(JSON.stringify(otelAttributes).includes('Project Cedar'), false);
 const request = JSON.parse(fs.readFileSync(path.join(root, 'remote-profile-request.template.json'), 'utf8'));

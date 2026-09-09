@@ -9,6 +9,7 @@ The optional mapper records four different facts on a span:
 | Share Preflight receipt | `share_preflight.receipt.*`, `share_preflight.policy.*` | Configured preflight outcome and profile, not a safety guarantee |
 | Cost evidence | `share_preflight.cost.*` | `ACTUAL_PROVIDER_REPORTED`, `ESTIMATED_RATE_CARD`, or `UNKNOWN` |
 | Task-specific evaluation | `share_preflight.evaluation.*` | Named test/acceptance result, or `UNKNOWN` / `NOT_RUN` |
+| Failure → improvement | `share_preflight.improvement.*` | A content-free failure class, synthetic regression-fixture ID, change ID, and re-evaluation state |
 | Content boundary | `share_preflight.content.capture=DISABLED` | This mapper does not add source text, finding values, receipt paths, prompts, or completions |
 
 ```js
@@ -18,11 +19,17 @@ import { toOtelAttributes } from './otel-evidence-bridge.mjs';
 span.setAttributes(toOtelAttributes({
   receipt,
   cost: { kind: 'ESTIMATED_RATE_CARD', amount_usd: 0.0012, basis_id: 'team-rate-card-v01' },
-  evaluation: { status: 'PASS', name: 'team-acceptance-check', version: 'v01' }
+  evaluation: { status: 'PASS', name: 'team-acceptance-check', version: 'v01' },
+  improvement: {
+    state: 'REEVALUATED_PASS',
+    failure_class: 'UNMAPPED_DESTINATION',
+    regression_fixture_id: 'synthetic-unmapped-destination-v01',
+    change_id: 'profile-change-v02'
+  }
 }));
 ```
 
-Do not translate an estimated rate card into an actual bill. Do not treat an evaluator pass as universal quality, correctness, safety, or approval. “Reasoning strength” is not emitted: if a provider exposes a requested reasoning setting or reasoning-token counter, add that separately with its provider-specific meaning.
+`failure_class` is a bounded category, not a copied error message or source record. `regression_fixture_id` must identify a synthetic fixture; do not put customer text or a private record identifier in it. Do not translate an estimated rate card into an actual bill. Do not treat an evaluator pass as universal quality, correctness, safety, or approval. “Reasoning strength” is not emitted: if a provider exposes a requested reasoning setting or reasoning-token counter, add that separately with its provider-specific meaning.
 
 ## OpenAI SDK trace relationship
 
