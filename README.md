@@ -38,6 +38,15 @@ the person or process responsible for the sharing decision.
 
 ![Share Preflight flow](examples/handoff-flow.svg)
 
+## Where it sits in the sharing workflow
+
+Share Preflight is deliberately narrow. It is not a redactor that rewrites a
+payload for onward transmission, and it is not a gateway that receives the
+full request before forwarding it. It helps the person making the handoff
+produce a local, content-minimised decision record first. That keeps policy
+inputs reviewable without turning this tool into a claim that the source is
+safe to disclose.
+
 ## A human review companion
 
 Sometimes the policy result is not the whole decision. Before publishing a
