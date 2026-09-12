@@ -9,6 +9,33 @@ It has two separate jobs:
 
 The original text, matching values, and local input/configuration paths are not included in the generated receipt or OPA input.
 
+## When this is useful
+
+Use this when someone is about to paste a production error, request trace,
+pull-request diff, support note, or incident timeline into an external AI tool,
+issue tracker, or chat.
+
+The practical question is usually simple: **can this particular material go to
+this particular destination under our current rules?** Share Preflight gives a
+team a repeatable local check before that handoff. It is useful when the team
+already knows which checks and destinations matter, but needs a small record of
+which configured profile was used and what the policy decided.
+
+It is not a universal secret scanner, automatic redactor, destination approval
+system, or compliance sign-off. If the configured result is `hold` or `deny`,
+do not forward the material automatically—resolve the missing condition with
+the person or process responsible for the sharing decision.
+
+## What happens in one run
+
+1. Run configured local checks against the text you are considering sharing.
+2. Create a receipt with counts, hashes, and profile facts—not the text,
+   matching values, or local paths.
+3. Pass that receipt to OPA for the named profile's `allow`, `hold`, or `deny`
+   decision.
+4. Keep the receipt with the handoff record; a person still decides whether to
+   send the original material.
+
 ## A human review companion
 
 Sometimes the policy result is not the whole decision. Before publishing a
