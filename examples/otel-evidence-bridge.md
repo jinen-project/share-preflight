@@ -31,6 +31,8 @@ span.setAttributes(toOtelAttributes({
 
 `failure_class` is a bounded category, not a copied error message or source record. `regression_fixture_id` must identify a synthetic fixture; do not put customer text or a private record identifier in it. Do not translate an estimated rate card into an actual bill. Do not treat an evaluator pass as universal quality, correctness, safety, or approval. “Reasoning strength” is not emitted: if a provider exposes a requested reasoning setting or reasoning-token counter, add that separately with its provider-specific meaning.
 
+The mapper enforces identifier-only metadata (`A-Z`, `a-z`, digits, `.`, `_`, and `-`, up to 80 characters) for profile, cost-basis, evaluation, and improvement labels. It rejects paths, free-form notes, and customer labels before they can become span attributes.
+
 ## OpenAI SDK trace relationship
 
 When a vendor SDK auto-generates its own GenAI span and does not offer a safe custom-attribute hook, create a bounded `share_preflight.decision` parent span with these attributes, then invoke the SDK inside that trace context. The relation is visible without copying receipt fields or source content into the vendor span.

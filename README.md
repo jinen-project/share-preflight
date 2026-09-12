@@ -38,7 +38,7 @@ the person or process responsible for the sharing decision.
 ## What happens in one run
 
 1. Run configured local checks against the text you are considering sharing.
-2. Create a receipt with counts, hashes, and profile facts—not the text,
+2. Create a receipt with finding categories, counts, and profile facts—not the text,
    matching values, or local paths.
 3. Pass that receipt to OPA for the named profile's `allow`, `hold`, or `deny`
    decision.

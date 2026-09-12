@@ -39,6 +39,14 @@ assert.equal(otelAttributes['share_preflight.content.capture'], 'DISABLED');
 assert.equal(otelAttributes['share_preflight.improvement.state'], 'REEVALUATED_PASS');
 assert.equal(JSON.stringify(otelAttributes).includes('/synthetic/hold.txt'), false);
 assert.equal(JSON.stringify(otelAttributes).includes('Project Cedar'), false);
+for (const invalidMetadata of [
+  { cost: { kind: 'ESTIMATED_RATE_CARD', amount_usd: 0.0012, basis_id: 'Customer Alpha incident 481' } },
+  { evaluation: { status: 'PASS', name: '/private/customer-alpha/check', version: 'v01' } },
+  { improvement: { state: 'OPEN', failure_class: 'Customer Alpha', regression_fixture_id: 'synthetic-v01' } },
+  { improvement: { state: 'OPEN', failure_class: 'UNMAPPED_DESTINATION', regression_fixture_id: 'synthetic-v01', change_id: 'ticket 481' } }
+]) {
+  assert.throws(() => toOtelAttributes({ receipt: result, ...invalidMetadata }), /stable identifier/);
+}
 const request = JSON.parse(fs.readFileSync(path.join(root, 'remote-profile-request.template.json'), 'utf8'));
 request.profile_id = 'example-team-v01';
 request.profile_label = 'Example team profile';
@@ -53,4 +61,4 @@ const opa = spawnSync('opa', [
   path.join(root, 'profiled_sharing_gate_test.rego')
 ], { encoding: 'utf8' });
 assert.equal(opa.status, 0, opa.stderr);
-console.log(JSON.stringify({ status: 'PASS_ONCE_SYNTHETIC', checks: 17, opa_tests: 'PASS_4_OF_4', content_free_receipt: true, local_paths_excluded: true, remote_request_validation: 'PASS', otel_evidence_mapping: 'PASS' }, null, 2));
+console.log(JSON.stringify({ status: 'PASS_ONCE_SYNTHETIC', checks: 21, opa_tests: 'PASS_4_OF_4', content_free_receipt: true, local_paths_excluded: true, remote_request_validation: 'PASS', otel_evidence_mapping: 'PASS' }, null, 2));

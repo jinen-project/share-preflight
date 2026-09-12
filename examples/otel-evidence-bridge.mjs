@@ -6,12 +6,20 @@
 const COST_KINDS = new Set(['ACTUAL_PROVIDER_REPORTED', 'ESTIMATED_RATE_CARD', 'UNKNOWN']);
 const EVALUATION_STATES = new Set(['PASS', 'FAIL', 'NOT_RUN', 'UNKNOWN']);
 const IMPROVEMENT_STATES = new Set(['NOT_APPLICABLE', 'OPEN', 'FIXED_PENDING_REEVALUATION', 'REEVALUATED_PASS', 'REEVALUATED_FAIL']);
+const STABLE_IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$/;
+
+function assertStableIdentifier(value, name) {
+  if (typeof value !== 'string' || !STABLE_IDENTIFIER.test(value)) {
+    throw new Error(`${name} must be a stable identifier`);
+  }
+}
 
 export function toOtelAttributes({ receipt, cost = { kind: 'UNKNOWN' }, evaluation = { status: 'UNKNOWN' }, improvement = { state: 'NOT_APPLICABLE' } }) {
   if (!receipt || receipt.receipt_type !== 'SHARE_PREFLIGHT_RECEIPT_V01') throw new Error('expected Share Preflight receipt');
   if (!COST_KINDS.has(cost.kind)) throw new Error('unsupported cost.kind');
   if (!EVALUATION_STATES.has(evaluation.status)) throw new Error('unsupported evaluation.status');
   if (!IMPROVEMENT_STATES.has(improvement.state)) throw new Error('unsupported improvement.state');
+  if (receipt.opa_input?.profile_id) assertStableIdentifier(receipt.opa_input.profile_id, 'profile_id');
   const attributes = {
     'share_preflight.receipt.type': receipt.receipt_type,
     'share_preflight.receipt.version': receipt.tool_version,
@@ -29,20 +37,25 @@ export function toOtelAttributes({ receipt, cost = { kind: 'UNKNOWN' }, evaluati
   };
   if (cost.kind !== 'UNKNOWN') {
     if (typeof cost.amount_usd !== 'number' || !Number.isFinite(cost.amount_usd) || cost.amount_usd < 0) throw new Error('known cost requires non-negative amount_usd');
-    if (!cost.basis_id) throw new Error('known cost requires basis_id');
+    assertStableIdentifier(cost.basis_id, 'cost.basis_id');
     attributes['share_preflight.cost.amount_usd'] = cost.amount_usd;
     attributes['share_preflight.cost.basis_id'] = cost.basis_id;
   }
   if (['PASS', 'FAIL'].includes(evaluation.status)) {
-    if (!evaluation.name || !evaluation.version) throw new Error('completed evaluation requires name and version');
+    assertStableIdentifier(evaluation.name, 'evaluation.name');
+    assertStableIdentifier(evaluation.version, 'evaluation.version');
     attributes['share_preflight.evaluation.name'] = evaluation.name;
     attributes['share_preflight.evaluation.version'] = evaluation.version;
   }
   if (improvement.state !== 'NOT_APPLICABLE') {
-    if (!improvement.failure_class || !improvement.regression_fixture_id) throw new Error('improvement state requires failure_class and regression_fixture_id');
+    assertStableIdentifier(improvement.failure_class, 'improvement.failure_class');
+    assertStableIdentifier(improvement.regression_fixture_id, 'improvement.regression_fixture_id');
     attributes['share_preflight.improvement.failure_class'] = improvement.failure_class;
     attributes['share_preflight.improvement.regression_fixture_id'] = improvement.regression_fixture_id;
-    if (improvement.change_id) attributes['share_preflight.improvement.change_id'] = improvement.change_id;
+    if (improvement.change_id) {
+      assertStableIdentifier(improvement.change_id, 'improvement.change_id');
+      attributes['share_preflight.improvement.change_id'] = improvement.change_id;
+    }
   }
   return attributes;
 }
