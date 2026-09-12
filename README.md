@@ -13,9 +13,10 @@ default.
 
 The OPA input is closed to `profile_id`, `data_classification`, `destination`,
 and `exception_approved`, plus the preflight status. Use stable, shareable
-labels for those fields and configured profile/rule IDs—not URLs with query
-strings, customer names, ticket titles, notes, or any other free-form
-identifier.
+labels for those fields and configured profile IDs—not URLs with query strings,
+customer names, ticket titles, notes, or any other free-form identifier.
+Configured rule IDs stay local; a receipt records only the finding category and
+count.
 
 ## When this is useful
 

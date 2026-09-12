@@ -20,6 +20,7 @@ const result = receipt({ inputPath, text: hold, configPath, config, facts: { ...
 assert.equal(result.status, 'HOLD_FOR_REVIEW');
 assert.equal(JSON.stringify(result).includes(hold), false);
 assert.equal(JSON.stringify(result).includes('Project Cedar'), false);
+assert.equal(JSON.stringify(result).includes('PROJECT_CEDAR'), false);
 assert.equal(JSON.stringify(result).includes(inputPath), false);
 assert.equal(JSON.stringify(result).includes(configPath), false);
 assert.equal(JSON.stringify(result.opa_input).includes('Customer Alpha incident 481'), false);
@@ -52,4 +53,4 @@ const opa = spawnSync('opa', [
   path.join(root, 'profiled_sharing_gate_test.rego')
 ], { encoding: 'utf8' });
 assert.equal(opa.status, 0, opa.stderr);
-console.log(JSON.stringify({ status: 'PASS_ONCE_SYNTHETIC', checks: 16, opa_tests: 'PASS_4_OF_4', content_free_receipt: true, local_paths_excluded: true, remote_request_validation: 'PASS', otel_evidence_mapping: 'PASS' }, null, 2));
+console.log(JSON.stringify({ status: 'PASS_ONCE_SYNTHETIC', checks: 17, opa_tests: 'PASS_4_OF_4', content_free_receipt: true, local_paths_excluded: true, remote_request_validation: 'PASS', otel_evidence_mapping: 'PASS' }, null, 2));

@@ -4,7 +4,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const VERSION = '0.3.0';
+const VERSION = '0.4.0';
 const OPA_FACT_FIELDS = ['profile_id', 'data_classification', 'destination', 'exception_approved'];
 
 const sha256 = (value) => crypto.createHash('sha256').update(value).digest('hex');
@@ -50,6 +50,9 @@ export function receipt({ inputPath, text, configPath, config, facts, findings }
   const opaFacts = Object.fromEntries(OPA_FACT_FIELDS
     .filter((field) => Object.hasOwn(facts, field))
     .map((field) => [field, facts[field]]));
+  // Rule IDs can be locally meaningful labels. The shareable receipt records
+  // only the configured finding category and count; inspect() remains local.
+  const receiptFindings = findings.map(({ category, count }) => ({ category, count }));
   return {
     receipt_type: 'SHARE_PREFLIGHT_RECEIPT_V01',
     tool_version: VERSION,
@@ -62,12 +65,13 @@ export function receipt({ inputPath, text, configPath, config, facts, findings }
     configuration: includeFingerprints
       ? { sha256: sha256(JSON.stringify(config)), profile_ids: Object.keys(config.profiles ?? {}) }
       : { fingerprint: 'OMITTED_BY_DEFAULT', profile_ids: Object.keys(config.profiles ?? {}) },
-    findings,
+    findings: receiptFindings,
     opa_input: { ...opaFacts, preflight_status: status },
     human_decision_required: true,
     nonclaims: [
       'This receipt does not contain input text or matched values.',
       'This receipt does not contain local input or configuration paths.',
+      'This receipt does not contain configured rule IDs.',
       'Input and configuration fingerprints are omitted unless explicitly enabled.',
       'A pass applies only to configured checks.',
       'This does not establish that material is safe to share, compliant, complete, or free of sensitive information.',
