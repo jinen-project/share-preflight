@@ -4,7 +4,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const VERSION = '0.4.0';
+const VERSION = '0.5.0';
 const OPA_FACT_FIELDS = ['profile_id', 'data_classification', 'destination', 'exception_approved'];
 
 const sha256 = (value) => crypto.createHash('sha256').update(value).digest('hex');
@@ -88,11 +88,11 @@ function args(argv) {
 
 function main(argv) {
   const value = args(argv);
-  if (!value['--config'] || !value['--input'] || !value['--facts']) throw new Error('Usage: node share-preflight.mjs --config config.json --input text.txt --facts facts.json [--receipt receipt.json] [--opa-input opa-input.json]');
+  if (!value['--config'] || !value['--input'] || !value['--facts']) throw new Error('Usage: node share-preflight.mjs --config config.json --input text.txt|--input - --facts facts.json [--receipt receipt.json] [--opa-input opa-input.json]');
   const configPath = path.resolve(value['--config']);
-  const inputPath = path.resolve(value['--input']);
+  const inputPath = value['--input'] === '-' ? '[stdin]' : path.resolve(value['--input']);
   const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-  const text = fs.readFileSync(inputPath, 'utf8');
+  const text = value['--input'] === '-' ? fs.readFileSync(0, 'utf8') : fs.readFileSync(inputPath, 'utf8');
   const facts = JSON.parse(fs.readFileSync(path.resolve(value['--facts']), 'utf8'));
   const result = receipt({ inputPath, text, configPath, config, facts, findings: inspect(text, config) });
   if (value['--receipt']) fs.writeFileSync(path.resolve(value['--receipt']), `${JSON.stringify(result, null, 2)}\n`);

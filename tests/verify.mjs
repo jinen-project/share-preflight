@@ -11,6 +11,14 @@ const config = JSON.parse(fs.readFileSync(path.join(root, 'example.config.json')
 const facts = JSON.parse(fs.readFileSync(path.join(root, 'examples/facts.json'), 'utf8'));
 const clean = fs.readFileSync(path.join(root, 'examples/clean.txt'), 'utf8');
 const hold = fs.readFileSync(path.join(root, 'examples/hold.txt'), 'utf8');
+const stdinRun = spawnSync(process.execPath, [
+  path.join(root, 'share-preflight.mjs'),
+  '--config', path.join(root, 'example.config.json'),
+  '--input', '-',
+  '--facts', path.join(root, 'examples/facts.json')
+], { input: clean, encoding: 'utf8' });
+assert.equal(stdinRun.status, 0, stdinRun.stderr);
+assert.equal(JSON.parse(stdinRun.stdout).input.fingerprint, 'OMITTED_BY_DEFAULT');
 assert.deepEqual(inspect(clean, config), []);
 const findings = inspect(hold, config);
 assert.equal(findings.length, 2);
@@ -61,4 +69,4 @@ const opa = spawnSync('opa', [
   path.join(root, 'profiled_sharing_gate_test.rego')
 ], { encoding: 'utf8' });
 assert.equal(opa.status, 0, opa.stderr);
-console.log(JSON.stringify({ status: 'PASS_ONCE_SYNTHETIC', checks: 21, opa_tests: 'PASS_4_OF_4', content_free_receipt: true, local_paths_excluded: true, remote_request_validation: 'PASS', otel_evidence_mapping: 'PASS' }, null, 2));
+console.log(JSON.stringify({ status: 'PASS_ONCE_SYNTHETIC', checks: 23, opa_tests: 'PASS_4_OF_4', content_free_receipt: true, local_paths_excluded: true, remote_request_validation: 'PASS', otel_evidence_mapping: 'PASS' }, null, 2));

@@ -86,6 +86,15 @@ opa eval --format=pretty \
   'data.share_preflight.decision'
 ```
 
+For a local pipeline, pass `--input -` to read standard input. This can sit
+after a local sanitizer or a clipboard command without giving Share Preflight
+clipboard access or writing the input to a receipt:
+
+```sh
+your-local-command-that-emits-text | node share-preflight.mjs \
+  --config example.config.json --input - --facts examples/facts.json
+```
+
 ## Standard profile, adjustable policy
 
 `standard-conservative-v01` is an editable, conservative starting point:
