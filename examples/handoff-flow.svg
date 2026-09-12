@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="260" viewBox="0 0 960 260" role="img" aria-labelledby="title desc">
+  <title id="title">Share Preflight handoff flow</title>
+  <desc id="desc">Text under consideration is checked locally. A content-minimised receipt is evaluated by an OPA profile. The allow, hold, or deny decision informs a human who decides whether to make the handoff.</desc>
+  <style>
+    .box { stroke-width: 2; rx: 14; }
+    .title { font: 700 18px system-ui, sans-serif; fill: #152238; }
+    .body { font: 14px system-ui, sans-serif; fill: #34445c; }
+    .small { font: 12px system-ui, sans-serif; fill: #52657f; }
+    .arrow { fill: none; stroke: #5c7499; stroke-width: 2.5; marker-end: url(#arrow); }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#5c7499"/>
+    </marker>
+  </defs>
+  <rect width="960" height="260" fill="#f8fafc"/>
+  <rect class="box" x="30" y="72" width="176" height="112" fill="#fff" stroke="#9bb4d2"/>
+  <text class="title" x="118" y="108" text-anchor="middle">Material to share</text>
+  <text class="body" x="118" y="135" text-anchor="middle">trace · diff · note</text>
+  <text class="small" x="118" y="160" text-anchor="middle">stays on the device</text>
+  <path class="arrow" d="M206 128 H264"/>
+  <rect class="box" x="264" y="72" width="192" height="112" fill="#eef6ff" stroke="#5c9bd5"/>
+  <text class="title" x="360" y="108" text-anchor="middle">Local preflight</text>
+  <text class="body" x="360" y="135" text-anchor="middle">configured checks only</text>
+  <text class="small" x="360" y="160" text-anchor="middle">no upload · no telemetry</text>
+  <path class="arrow" d="M456 128 H514"/>
+  <rect class="box" x="514" y="72" width="192" height="112" fill="#eefaf3" stroke="#58a57c"/>
+  <text class="title" x="610" y="108" text-anchor="middle">Minimal receipt</text>
+  <text class="body" x="610" y="135" text-anchor="middle">counts · hashes · profile</text>
+  <text class="small" x="610" y="160" text-anchor="middle">no source text or matches</text>
+  <path class="arrow" d="M706 128 H764"/>
+  <rect class="box" x="764" y="72" width="166" height="112" fill="#fff7e7" stroke="#d69b3d"/>
+  <text class="title" x="847" y="108" text-anchor="middle">OPA + human</text>
+  <text class="body" x="847" y="135" text-anchor="middle">allow · hold · deny</text>
+  <text class="small" x="847" y="160" text-anchor="middle">person decides to send</text>
+  <text class="small" x="480" y="228" text-anchor="middle">Share Preflight is a bounded local check, not an automatic approval or a guarantee.</text>
+</svg>

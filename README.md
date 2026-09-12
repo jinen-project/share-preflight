@@ -36,6 +36,8 @@ the person or process responsible for the sharing decision.
 4. Keep the receipt with the handoff record; a person still decides whether to
    send the original material.
 
+![Share Preflight flow](examples/handoff-flow.svg)
+
 ## A human review companion
 
 Sometimes the policy result is not the whole decision. Before publishing a
