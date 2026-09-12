@@ -4,7 +4,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 
 const sha256 = (value) => crypto.createHash('sha256').update(value).digest('hex');
 const list = (value) => Array.isArray(value) ? value : [];
@@ -47,13 +47,16 @@ export function receipt({ inputPath, text, configPath, config, facts, findings }
     receipt_type: 'SHARE_PREFLIGHT_RECEIPT_V01',
     tool_version: VERSION,
     status,
-    input: { path: inputPath, byte_length: Buffer.byteLength(text), sha256: sha256(text) },
-    configuration: { path: configPath, sha256: sha256(JSON.stringify(config)), profile_ids: Object.keys(config.profiles ?? {}) },
+    // Paths often encode project, customer, or user information. A receipt is
+    // intended for a handoff record, so keep only content-independent facts.
+    input: { byte_length: Buffer.byteLength(text), sha256: sha256(text) },
+    configuration: { sha256: sha256(JSON.stringify(config)), profile_ids: Object.keys(config.profiles ?? {}) },
     findings,
     opa_input: { ...facts, preflight_status: status },
     human_decision_required: true,
     nonclaims: [
       'This receipt does not contain input text or matched values.',
+      'This receipt does not contain local input or configuration paths.',
       'A pass applies only to configured checks.',
       'This does not establish that material is safe to share, compliant, complete, or free of sensitive information.',
       'A responsible person decides whether and where material may be shared.'

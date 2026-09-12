@@ -14,10 +14,14 @@ const hold = fs.readFileSync(path.join(root, 'examples/hold.txt'), 'utf8');
 assert.deepEqual(inspect(clean, config), []);
 const findings = inspect(hold, config);
 assert.equal(findings.length, 2);
-const result = receipt({ inputPath: '/synthetic/hold.txt', text: hold, configPath: '/synthetic/config.json', config, facts, findings });
+const inputPath = '/private/customer-alpha/incident-481.txt';
+const configPath = '/private/customer-alpha/policy.json';
+const result = receipt({ inputPath, text: hold, configPath, config, facts, findings });
 assert.equal(result.status, 'HOLD_FOR_REVIEW');
 assert.equal(JSON.stringify(result).includes(hold), false);
 assert.equal(JSON.stringify(result).includes('Project Cedar'), false);
+assert.equal(JSON.stringify(result).includes(inputPath), false);
+assert.equal(JSON.stringify(result).includes(configPath), false);
 const otelAttributes = toOtelAttributes({
   receipt: result,
   cost: { kind: 'ESTIMATED_RATE_CARD', amount_usd: 0.0012, basis_id: 'synthetic-rate-card-v01' },
@@ -42,4 +46,4 @@ const opa = spawnSync('opa', [
   path.join(root, 'profiled_sharing_gate_test.rego')
 ], { encoding: 'utf8' });
 assert.equal(opa.status, 0, opa.stderr);
-console.log(JSON.stringify({ status: 'PASS_ONCE_SYNTHETIC', checks: 10, opa_tests: 'PASS_4_OF_4', content_free_receipt: true, remote_request_validation: 'PASS', otel_evidence_mapping: 'PASS' }, null, 2));
+console.log(JSON.stringify({ status: 'PASS_ONCE_SYNTHETIC', checks: 12, opa_tests: 'PASS_4_OF_4', content_free_receipt: true, local_paths_excluded: true, remote_request_validation: 'PASS', otel_evidence_mapping: 'PASS' }, null, 2));
