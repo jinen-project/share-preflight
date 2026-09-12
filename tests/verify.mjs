@@ -23,6 +23,11 @@ assert.equal(JSON.stringify(result).includes('Project Cedar'), false);
 assert.equal(JSON.stringify(result).includes(inputPath), false);
 assert.equal(JSON.stringify(result).includes(configPath), false);
 assert.equal(JSON.stringify(result.opa_input).includes('Customer Alpha incident 481'), false);
+assert.equal(result.input.fingerprint, 'OMITTED_BY_DEFAULT');
+assert.equal(result.configuration.fingerprint, 'OMITTED_BY_DEFAULT');
+const fingerprinted = receipt({ inputPath, text: hold, configPath, config: { ...config, receipt: { include_fingerprints: true } }, facts, findings });
+assert.equal(typeof fingerprinted.input.sha256, 'string');
+assert.equal(typeof fingerprinted.configuration.sha256, 'string');
 const otelAttributes = toOtelAttributes({
   receipt: result,
   cost: { kind: 'ESTIMATED_RATE_CARD', amount_usd: 0.0012, basis_id: 'synthetic-rate-card-v01' },
@@ -47,4 +52,4 @@ const opa = spawnSync('opa', [
   path.join(root, 'profiled_sharing_gate_test.rego')
 ], { encoding: 'utf8' });
 assert.equal(opa.status, 0, opa.stderr);
-console.log(JSON.stringify({ status: 'PASS_ONCE_SYNTHETIC', checks: 12, opa_tests: 'PASS_4_OF_4', content_free_receipt: true, local_paths_excluded: true, remote_request_validation: 'PASS', otel_evidence_mapping: 'PASS' }, null, 2));
+console.log(JSON.stringify({ status: 'PASS_ONCE_SYNTHETIC', checks: 16, opa_tests: 'PASS_4_OF_4', content_free_receipt: true, local_paths_excluded: true, remote_request_validation: 'PASS', otel_evidence_mapping: 'PASS' }, null, 2));

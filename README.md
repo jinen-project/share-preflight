@@ -7,7 +7,9 @@ It has two separate jobs:
 1. inspect only the patterns you configure on your device; and
 2. give [Open Policy Agent](https://www.openpolicyagent.org/) a **content-minimised** summary so it can return `allow`, `hold`, or `deny` from a named policy profile.
 
-The original text, matching values, and local input/configuration paths are not included in the generated receipt or OPA input.
+The original text, matching values, local input/configuration paths, and
+content fingerprints are not included in the generated receipt or OPA input by
+default.
 
 The OPA input is closed to `profile_id`, `data_classification`, `destination`,
 and `exception_approved`, plus the preflight status. Use stable, shareable
@@ -91,9 +93,12 @@ opa eval --format=pretty \
 * missing facts and unknown profiles hold for review;
 * restricted material to an unapproved destination is denied.
 
-The receipt retains only the input byte length and content hash, plus the
-configuration hash and profile IDs. Keep your own mapping from those hashes to
-local files if you need it; do not treat that mapping as shareable evidence.
+The default receipt omits input byte length, input hash, and configuration hash.
+Hashes can still disclose information when a candidate input or configuration
+is guessable. If a trusted internal record genuinely needs those fingerprints,
+set `"receipt": { "include_fingerprints": true }` in the local configuration
+and keep that receipt within the same trusted boundary. Do not treat a hash
+mapping as shareable evidence.
 
 Teams can add a separately named profile and adjust their data labels, approved destinations, and exception path. A profile should name its owner, record why it changed, and carry synthetic `allow`, `hold`, and `deny` examples. The free OSS does not lock this behind a paid tier.
 
