@@ -16,12 +16,13 @@ const findings = inspect(hold, config);
 assert.equal(findings.length, 2);
 const inputPath = '/private/customer-alpha/incident-481.txt';
 const configPath = '/private/customer-alpha/policy.json';
-const result = receipt({ inputPath, text: hold, configPath, config, facts, findings });
+const result = receipt({ inputPath, text: hold, configPath, config, facts: { ...facts, private_note: 'Customer Alpha incident 481' }, findings });
 assert.equal(result.status, 'HOLD_FOR_REVIEW');
 assert.equal(JSON.stringify(result).includes(hold), false);
 assert.equal(JSON.stringify(result).includes('Project Cedar'), false);
 assert.equal(JSON.stringify(result).includes(inputPath), false);
 assert.equal(JSON.stringify(result).includes(configPath), false);
+assert.equal(JSON.stringify(result.opa_input).includes('Customer Alpha incident 481'), false);
 const otelAttributes = toOtelAttributes({
   receipt: result,
   cost: { kind: 'ESTIMATED_RATE_CARD', amount_usd: 0.0012, basis_id: 'synthetic-rate-card-v01' },

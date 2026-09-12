@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const VERSION = '0.2.0';
+const OPA_FACT_FIELDS = ['profile_id', 'data_classification', 'destination', 'exception_approved'];
 
 const sha256 = (value) => crypto.createHash('sha256').update(value).digest('hex');
 const list = (value) => Array.isArray(value) ? value : [];
@@ -43,6 +44,11 @@ export function inspect(text, config) {
 
 export function receipt({ inputPath, text, configPath, config, facts, findings }) {
   const status = findings.length === 0 ? 'PASS_WITHIN_CONFIGURED_SCOPE' : 'HOLD_FOR_REVIEW';
+  // Facts are user-supplied metadata. Keep the policy input intentionally
+  // closed so an incidental note or identifier cannot cross this boundary.
+  const opaFacts = Object.fromEntries(OPA_FACT_FIELDS
+    .filter((field) => Object.hasOwn(facts, field))
+    .map((field) => [field, facts[field]]));
   return {
     receipt_type: 'SHARE_PREFLIGHT_RECEIPT_V01',
     tool_version: VERSION,
@@ -52,7 +58,7 @@ export function receipt({ inputPath, text, configPath, config, facts, findings }
     input: { byte_length: Buffer.byteLength(text), sha256: sha256(text) },
     configuration: { sha256: sha256(JSON.stringify(config)), profile_ids: Object.keys(config.profiles ?? {}) },
     findings,
-    opa_input: { ...facts, preflight_status: status },
+    opa_input: { ...opaFacts, preflight_status: status },
     human_decision_required: true,
     nonclaims: [
       'This receipt does not contain input text or matched values.',

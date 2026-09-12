@@ -9,6 +9,12 @@ It has two separate jobs:
 
 The original text, matching values, and local input/configuration paths are not included in the generated receipt or OPA input.
 
+The OPA input is closed to `profile_id`, `data_classification`, `destination`,
+and `exception_approved`, plus the preflight status. Use stable, shareable
+labels for those fields and configured profile/rule IDs—not URLs with query
+strings, customer names, ticket titles, notes, or any other free-form
+identifier.
+
 ## When this is useful
 
 Use this when someone is about to paste a production error, request trace,
