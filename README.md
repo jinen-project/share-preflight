@@ -9,6 +9,19 @@ It has two separate jobs:
 
 The original text and a matching value are not included in the generated receipt or OPA input.
 
+## A human review companion
+
+Sometimes the policy result is not the whole decision. Before publishing a
+status note or forwarding an AI-assisted answer, a reader may also want a short
+prompt that separates what was directly observed, what the evidence supports,
+and what remains unestablished. The free
+[Claim-Scope Review Checklist](https://worldreader6.gumroad.com/l/mkebln) is a
+human decision aid for that step.
+
+It does not inspect text, run a policy, or replace this tool's configured
+checks. Use it to frame the decision; use Share Preflight to create the
+content-minimised receipt for the configured sharing boundary.
+
 ## Quick start
 
 ```sh
