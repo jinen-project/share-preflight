@@ -1,5 +1,7 @@
 # Share Preflight
 
+[![Verify](https://github.com/jinen-project/share-preflight/actions/workflows/verify.yml/badge.svg)](https://github.com/jinen-project/share-preflight/actions/workflows/verify.yml)
+
 Small, local-first checks before you share text with an AI tool, issue tracker, chat, or external handoff.
 
 It has two separate jobs:
