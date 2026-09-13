@@ -56,11 +56,13 @@ for (const invalidMetadata of [
   assert.throws(() => toOtelAttributes({ receipt: result, ...invalidMetadata }), /stable identifier/);
 }
 const request = JSON.parse(fs.readFileSync(path.join(root, 'remote-profile-request.template.json'), 'utf8'));
+assert.equal(validate(request).status, 'HOLD_FOR_REQUESTER');
 request.profile_id = 'example-team-v01';
 request.profile_label = 'Example team profile';
 request.responsible_owner_role = 'Security owner';
 request.exception_approver_role = 'Security approver';
 request.change_rationale = 'Synthetic test request.';
+request.approved_destinations = ['approved-example-destination'];
 assert.equal(validate(request).status, 'READY_FOR_PROFILE_TRANSLATION');
 const opa = spawnSync('opa', [
   'test',
