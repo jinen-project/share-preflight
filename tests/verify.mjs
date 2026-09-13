@@ -20,6 +20,28 @@ const stdinRun = spawnSync(process.execPath, [
 ], { input: clean, encoding: 'utf8' });
 assert.equal(stdinRun.status, 0, stdinRun.stderr);
 assert.equal(JSON.parse(stdinRun.stdout).input.fingerprint, 'OMITTED_BY_DEFAULT');
+const localEntryRun = spawnSync(process.execPath, [
+  path.join(root, 'share-preflight.mjs'),
+  '--config', path.join(root, 'example.config.json'),
+  '--entry-facts', path.join(root, 'examples/handoff-entry-local.synthetic.json'),
+  '--input', path.join(root, 'examples/clean.txt'),
+  '--facts', path.join(root, 'examples/facts.json')
+], { encoding: 'utf8' });
+assert.equal(localEntryRun.status, 0, localEntryRun.stderr);
+assert.equal(JSON.parse(localEntryRun.stdout).status, 'PASS_WITHIN_CONFIGURED_SCOPE');
+const externalEntryRun = spawnSync(process.execPath, [
+  path.join(root, 'share-preflight.mjs'),
+  '--config', path.join(root, 'example.config.json'),
+  '--entry-facts', path.join(root, 'examples/handoff-entry-external-request.synthetic.json'),
+  '--input', path.join(root, 'examples/input-is-never-opened.txt'),
+  '--facts', path.join(root, 'examples/facts.json')
+], { encoding: 'utf8' });
+assert.equal(externalEntryRun.status, 2, externalEntryRun.stderr);
+const externalEntryOutput = JSON.parse(externalEntryRun.stdout);
+assert.equal(externalEntryOutput.handoff_entry_preflight.decision, 'HOLD_EXTERNAL_HANDOFF_SEPARATE_AUTHORITY');
+assert.equal(externalEntryOutput.source_loaded, false);
+assert.equal(externalEntryOutput.receipt_created, false);
+assert.equal(externalEntryOutput.opa_input_created, false);
 assert.deepEqual(inspect(clean, config), []);
 const findings = inspect(hold, config);
 assert.equal(findings.length, 2);
@@ -108,4 +130,4 @@ const opa = spawnSync('opa', [
   path.join(root, 'profiled_sharing_gate_test.rego')
 ], { encoding: 'utf8' });
 assert.equal(opa.status, 0, opa.stderr);
-console.log(JSON.stringify({ status: 'PASS_ONCE_SYNTHETIC', checks: 28, opa_tests: 'PASS_4_OF_4', content_free_receipt: true, local_paths_excluded: true, remote_request_validation: 'PASS', handoff_entry_preflight: 'PASS', otel_evidence_mapping: 'PASS' }, null, 2));
+console.log(JSON.stringify({ status: 'PASS_ONCE_SYNTHETIC', checks: 34, opa_tests: 'PASS_4_OF_4', content_free_receipt: true, local_paths_excluded: true, remote_request_validation: 'PASS', handoff_entry_preflight: 'PASS', entry_gated_local_inspection: 'PASS', otel_evidence_mapping: 'PASS' }, null, 2));

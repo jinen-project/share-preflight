@@ -3,6 +3,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { preflightHandoffEntry } from './handoff-entry-preflight.mjs';
 
 const VERSION = '0.5.0';
 const OPA_FACT_FIELDS = ['profile_id', 'data_classification', 'destination', 'exception_approved'];
@@ -88,7 +89,19 @@ function args(argv) {
 
 function main(argv) {
   const value = args(argv);
-  if (!value['--config'] || !value['--input'] || !value['--facts']) throw new Error('Usage: node share-preflight.mjs --config config.json --input text.txt|--input - --facts facts.json [--receipt receipt.json] [--opa-input opa-input.json]');
+  if (!value['--config'] || !value['--input'] || !value['--facts']) throw new Error('Usage: node share-preflight.mjs --config config.json --input text.txt|--input - --facts facts.json [--entry-facts handoff-metadata.json] [--receipt receipt.json] [--opa-input opa-input.json]');
+  if (value['--entry-facts']) {
+    const entry = preflightHandoffEntry(JSON.parse(fs.readFileSync(path.resolve(value['--entry-facts']), 'utf8')));
+    if (entry.decision !== 'LOCAL_INSPECTION_READY') {
+      console.log(JSON.stringify({
+        handoff_entry_preflight: entry,
+        source_loaded: false,
+        receipt_created: false,
+        opa_input_created: false
+      }, null, 2));
+      return 2;
+    }
+  }
   const configPath = path.resolve(value['--config']);
   const inputPath = value['--input'] === '-' ? '[stdin]' : path.resolve(value['--input']);
   const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));

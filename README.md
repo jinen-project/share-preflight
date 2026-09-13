@@ -50,6 +50,23 @@ An unresolved purpose is valid at this layer. The result never invokes OPA or
 permits sharing; it only says whether the next step can remain local and
 content-free.
 
+To make that order executable, pass a separately stored metadata-only entry
+file to the normal local inspection command. When it is not
+`LOCAL_INSPECTION_READY`, Share Preflight exits before opening the input,
+creating a receipt, or creating OPA input:
+
+```sh
+node share-preflight.mjs \
+  --config example.config.json \
+  --entry-facts examples/handoff-entry-local.synthetic.json \
+  --input examples/clean.txt \
+  --facts examples/facts.json
+```
+
+The two `handoff-entry-*.synthetic.json` files are only synthetic examples.
+They are not a source-text format, a handoff authorization, or a replacement
+for the responsible person's decision.
+
 It is not a universal secret scanner, automatic redactor, destination approval
 system, or compliance sign-off. If the configured result is `hold` or `deny`,
 do not forward the material automatically—resolve the missing condition with
