@@ -132,6 +132,12 @@ node validate-remote-profile-request.mjs my-profile-request.json
 
 `READY_FOR_PROFILE_TRANSLATION` means the request has the fields needed to draft a profile. It is not an approval, a security assessment, or a claim that the resulting profile is correct.
 
+For a complete content-free example, see
+[`examples/remote-profile-request.synthetic.json`](examples/remote-profile-request.synthetic.json).
+It shows the smallest useful request: stable labels, accountable roles, named
+destinations, three synthetic decision cases, and an explicit confirmation that
+source text, credentials, and customer data are absent.
+
 ## What this does not claim
 
 Share Preflight does not guarantee leak prevention, detect every sensitive-data type, detect all shadow AI use, certify compliance, or decide whether a classification is correct. A `PASS_WITHIN_CONFIGURED_SCOPE` result applies only to the checks you enabled. A responsible person decides whether material may be shared.

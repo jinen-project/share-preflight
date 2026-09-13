@@ -64,6 +64,8 @@ request.exception_approver_role = 'Security approver';
 request.change_rationale = 'Synthetic test request.';
 request.approved_destinations = ['approved-example-destination'];
 assert.equal(validate(request).status, 'READY_FOR_PROFILE_TRANSLATION');
+const completeSyntheticRequest = JSON.parse(fs.readFileSync(path.join(root, 'examples/remote-profile-request.synthetic.json'), 'utf8'));
+assert.equal(validate(completeSyntheticRequest).status, 'READY_FOR_PROFILE_TRANSLATION');
 const opa = spawnSync('opa', [
   'test',
   path.join(root, 'policy_profiles.json'),

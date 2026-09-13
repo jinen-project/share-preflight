@@ -1,0 +1,32 @@
+{
+  "request_type": "SHARE_PREFLIGHT_PROFILE_REQUEST_V01",
+  "profile_id": "product-feedback-sandbox-v01",
+  "profile_label": "Product feedback sandbox",
+  "responsible_owner_role": "Product operations owner",
+  "classification_labels": {
+    "public": ["public"],
+    "restricted": ["restricted"]
+  },
+  "approved_destinations": ["approved-external-ai-workspace"],
+  "exception_approver_role": "Security review owner",
+  "expected_cases": [
+    {
+      "expected_decision": "allow",
+      "synthetic_description": "A public product description passes configured local checks."
+    },
+    {
+      "expected_decision": "hold",
+      "synthetic_description": "The destination classification is not yet supplied."
+    },
+    {
+      "expected_decision": "deny",
+      "synthetic_description": "Restricted material targets a destination outside the profile."
+    }
+  ],
+  "change_rationale": "Create a small, reviewable sharing profile before a new external AI handoff path is used.",
+  "confirmation": {
+    "contains_no_source_text": true,
+    "contains_no_credentials": true,
+    "contains_no_customer_data": true
+  }
+}
