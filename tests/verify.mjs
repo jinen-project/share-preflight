@@ -5,6 +5,7 @@ import path from 'node:path';
 import { inspect, receipt } from '../share-preflight.mjs';
 import { validate } from '../validate-remote-profile-request.mjs';
 import { toOtelAttributes } from '../examples/otel-evidence-bridge.mjs';
+import { preflightHandoffEntry } from '../handoff-entry-preflight.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const config = JSON.parse(fs.readFileSync(path.join(root, 'example.config.json'), 'utf8'));
@@ -66,6 +67,40 @@ request.approved_destinations = ['approved-example-destination'];
 assert.equal(validate(request).status, 'READY_FOR_PROFILE_TRANSLATION');
 const completeSyntheticRequest = JSON.parse(fs.readFileSync(path.join(root, 'examples/remote-profile-request.synthetic.json'), 'utf8'));
 assert.equal(validate(completeSyntheticRequest).status, 'READY_FOR_PROFILE_TRANSLATION');
+assert.equal(preflightHandoffEntry({
+  representation_mode: 'NONE',
+  source_boundary_declared: false,
+  destination_declared: false,
+  responsible_owner_declared: false,
+  external_handoff_requested: false
+}).decision, 'STARTING_CONDITION_DISCOVERY_READY');
+const entryBoundary = preflightHandoffEntry({
+  representation_mode: 'METADATA_ONLY',
+  source_boundary_declared: false,
+  destination_declared: true,
+  responsible_owner_declared: false,
+  external_handoff_requested: false
+});
+assert.equal(entryBoundary.decision, 'BOUNDARY_DISCOVERY_READY');
+assert.deepEqual(entryBoundary.missing_conditions, ['SOURCE_BOUNDARY', 'RESPONSIBLE_RELATION']);
+assert.equal(preflightHandoffEntry({
+  representation_mode: 'METADATA_ONLY',
+  source_boundary_declared: true,
+  destination_declared: true,
+  responsible_owner_declared: true,
+  external_handoff_requested: false
+}).decision, 'LOCAL_INSPECTION_READY');
+assert.equal(preflightHandoffEntry({
+  representation_mode: 'METADATA_ONLY',
+  source_boundary_declared: true,
+  destination_declared: true,
+  responsible_owner_declared: true,
+  external_handoff_requested: true
+}).decision, 'HOLD_EXTERNAL_HANDOFF_SEPARATE_AUTHORITY');
+assert.throws(() => preflightHandoffEntry({
+  representation_mode: 'NONE', source_boundary_declared: false, destination_declared: false,
+  responsible_owner_declared: false, external_handoff_requested: false, source_text: 'denied'
+}), /RAW_OR_UNKNOWN_HANDOFF_FIELD_DENIED/);
 const opa = spawnSync('opa', [
   'test',
   path.join(root, 'policy_profiles.json'),
@@ -73,4 +108,4 @@ const opa = spawnSync('opa', [
   path.join(root, 'profiled_sharing_gate_test.rego')
 ], { encoding: 'utf8' });
 assert.equal(opa.status, 0, opa.stderr);
-console.log(JSON.stringify({ status: 'PASS_ONCE_SYNTHETIC', checks: 23, opa_tests: 'PASS_4_OF_4', content_free_receipt: true, local_paths_excluded: true, remote_request_validation: 'PASS', otel_evidence_mapping: 'PASS' }, null, 2));
+console.log(JSON.stringify({ status: 'PASS_ONCE_SYNTHETIC', checks: 28, opa_tests: 'PASS_4_OF_4', content_free_receipt: true, local_paths_excluded: true, remote_request_validation: 'PASS', handoff_entry_preflight: 'PASS', otel_evidence_mapping: 'PASS' }, null, 2));

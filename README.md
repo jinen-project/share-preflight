@@ -32,6 +32,24 @@ team a repeatable local check before that handoff. It is useful when the team
 already knows which checks and destinations matter, but needs a small record of
 which configured profile was used and what the policy decided.
 
+## Before OPA: make the sharing condition legible
+
+OPA is a decision point, not the first contact with an uncertain situation.
+Before local inspection or OPA, use
+[`handoff-entry-preflight.mjs`](handoff-entry-preflight.mjs) with metadata only.
+It accepts no source text, paths, identifiers, credentials, customer data, or
+purpose statement. It distinguishes:
+
+- an empty but explorable starting position;
+- a boundary-discovery position, naming only the missing source, destination,
+  or responsible-relation condition;
+- a locally inspectable position; and
+- a separate HOLD when an external handoff has already been requested.
+
+An unresolved purpose is valid at this layer. The result never invokes OPA or
+permits sharing; it only says whether the next step can remain local and
+content-free.
+
 It is not a universal secret scanner, automatic redactor, destination approval
 system, or compliance sign-off. If the configured result is `hold` or `deny`,
 do not forward the material automatically—resolve the missing condition with
