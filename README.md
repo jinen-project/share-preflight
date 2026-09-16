@@ -173,6 +173,32 @@ It shows the smallest useful request: stable labels, accountable roles, named
 destinations, three synthetic decision cases, and an explicit confirmation that
 source text, credentials, and customer data are absent.
 
+## Boundary FAQ
+
+## What does a passing result mean?
+
+It means only that the locally enabled checks did not produce a hold or deny result for the named profile and supplied facts. It is not a universal safety conclusion.
+
+## Does it guarantee that sharing is safe?
+
+No. It does not guarantee leak prevention, complete sensitive-data detection, correct classification, or compliance.
+
+## Does it replace a secret scanner or redactor?
+
+No. It is a narrow, local, content-minimised decision-record layer for a named external handoff. Established secret scanners and any required redaction workflow remain separate.
+
+## Does OPA make the final sharing decision?
+
+No. OPA returns the configured policy result. A responsible person still decides whether the material may be shared.
+
+## What information is excluded by default?
+
+The original text, matching values, local input/configuration paths, and content fingerprints are excluded from the default receipt and OPA input.
+
+## Does silence or page visibility prove demand?
+
+No. Silence remains unknown, and visibility, reactions, or repeated reads do not establish adoption, demand, value, or revenue.
+
 ## What this does not claim
 
 Share Preflight does not guarantee leak prevention, detect every sensitive-data type, detect all shadow AI use, certify compliance, or decide whether a classification is correct. A `PASS_WITHIN_CONFIGURED_SCOPE` result applies only to the checks you enabled. A responsible person decides whether material may be shared.
